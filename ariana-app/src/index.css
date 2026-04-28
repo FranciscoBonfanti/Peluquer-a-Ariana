@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #C4748A;
+    --rose-light: #E8C5CF;
+    --gold: #C9A96E;
+    --black: #1A1A1A;
+    --grey: #7A7A7A;
+    --cream: #FBF6F3;
+  }
+
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    background: var(--cream);
+    color: var(--black);
+  }
+
+  ::selection { background: rgba(196,116,138,0.2); }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(196,116,138,0.3); border-radius: 99px; }
+}
+
+@layer utilities {
+  .shimmer-text {
+    background: linear-gradient(90deg, #C4748A 0%, #E8A0B4 30%, #C9A96E 50%, #E8A0B4 70%, #C4748A 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s linear infinite;
+  }
+
+  .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+  .section-label {
+    @apply text-xs font-semibold tracking-[0.2em] uppercase text-rose mb-3;
+  }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    @apply text-4xl font-semibold leading-tight;
+  }
+}
