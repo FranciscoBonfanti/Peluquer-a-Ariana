@@ -14,6 +14,7 @@ interface AdminStore {
   login: (password: string) => boolean;
   logout: () => void;
   setView: (view: AdminView) => void;
+  addAppointment: (appointment: Omit<Appointment, 'id' | 'createdAt'>) => void;
   updateAppointmentStatus: (id: string, status: Appointment['status']) => void;
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   deleteExpense: (id: string) => void;
@@ -43,6 +44,11 @@ export const useAdminStore = create<AdminStore>()(
       logout: () => set({ authenticated: false, activeView: 'dashboard' }),
 
       setView: (activeView) => set({ activeView }),
+
+      addAppointment: (appointment) =>
+        set((state) => ({
+          appointments: [{ ...appointment, id: generateId(), createdAt: new Date().toISOString() }, ...state.appointments],
+        })),
 
       updateAppointmentStatus: (id, status) =>
         set((state) => ({

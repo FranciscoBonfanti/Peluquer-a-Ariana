@@ -1,4 +1,5 @@
 import { useBookingStore } from '../../store/bookingStore';
+import { useAdminStore } from '../../store/adminStore';
 import { SERVICES, TIME_SLOTS, UNAVAILABLE_SLOTS, WHATSAPP } from '../../lib/constants';
 import { formatDate, buildWhatsAppMessage } from '../../lib/utils';
 import { MiniCalendar } from './MiniCalendar';
@@ -61,6 +62,8 @@ export function BookingWizard() {
     setStep, setService, setDate, setTime, setClientName, setClientPhone, setStatus, reset,
   } = useBookingStore();
 
+  const addAppointment = useAdminStore((s) => s.addAppointment);
+
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     values: { name: clientName, phone: clientPhone },
@@ -70,7 +73,19 @@ export function BookingWizard() {
     setClientName(data.name);
     setClientPhone(data.phone);
     setStatus('loading');
-    setTimeout(() => setStatus('success'), 1200);
+    setTimeout(() => {
+      const svc = SERVICES.find((s) => s.name === service);
+      addAppointment({
+        clientName: data.name,
+        clientPhone: data.phone,
+        service,
+        date: date ? date.toISOString().split('T')[0] : '',
+        time,
+        status: 'pending',
+        price: svc?.priceNum ?? 0,
+      });
+      setStatus('success');
+    }, 1200);
   };
 
   const waLink = `https://wa.me/${WHATSAPP}?text=${buildWhatsAppMessage(service, date, time, clientName, clientPhone)}`;
