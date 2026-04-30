@@ -24,11 +24,28 @@
     color: var(--black);
   }
 
+  /* Accessible focus ring for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid var(--rose);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
   ::selection { background: rgba(196,116,138,0.2); }
 
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(196,116,138,0.3); border-radius: 99px; }
+
+  /* Respect user motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
+  }
 }
 
 @layer utilities {

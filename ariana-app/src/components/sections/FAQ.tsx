@@ -13,7 +13,7 @@ export function FAQ() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <section ref={ref} className="bg-white py-24 px-6">
+    <section ref={ref} className="bg-white py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-[780px] mx-auto">
         <div
           className="text-center mb-12 transition-all duration-500"

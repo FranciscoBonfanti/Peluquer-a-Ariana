@@ -51,7 +51,7 @@ export function MiniCalendar({ selected, onSelect }: MiniCalendarProps) {
               key={i}
               disabled={disabled}
               onClick={() => onSelect(new Date(view.year, view.month, d))}
-              className="aspect-square rounded-lg font-sans text-[13px] font-medium transition-colors duration-150 outline-none"
+              className="aspect-square min-h-[36px] rounded-lg font-sans text-[13px] font-medium transition-colors duration-150 outline-none"
               style={{
                 cursor: disabled ? 'not-allowed' : 'pointer',
                 fontWeight: sel ? 600 : 400,

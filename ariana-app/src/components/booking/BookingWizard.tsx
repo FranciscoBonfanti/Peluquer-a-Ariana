@@ -1,7 +1,8 @@
+import { useMemo } from 'react';
 import { useBookingStore } from '../../store/bookingStore';
 import { useAdminStore } from '../../store/adminStore';
-import { SERVICES, TIME_SLOTS, UNAVAILABLE_SLOTS, WHATSAPP } from '../../lib/constants';
-import { formatDate, buildWhatsAppMessage } from '../../lib/utils';
+import { TIME_SLOTS, UNAVAILABLE_SLOTS, WHATSAPP } from '../../lib/constants';
+import { formatDate, buildWhatsAppMessage, buildGoogleCalendarUrl } from '../../lib/utils';
 import { MiniCalendar } from './MiniCalendar';
 import { Button } from '../ui/Button';
 import { useForm } from 'react-hook-form';
@@ -9,6 +10,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 const STEPS = ['Servicio', 'Fecha', 'Horario', 'Tus datos'];
+const UNAVAILABLE_SET = new Set(UNAVAILABLE_SLOTS);
 
 const formSchema = z.object({
   name: z.string().min(2, 'Ingresá tu nombre'),
@@ -19,15 +21,15 @@ type FormValues = z.infer<typeof formSchema>;
 
 function StepIndicator({ step }: { step: number }) {
   return (
-    <div className="flex justify-center items-center gap-0 mb-10">
+    <div className="flex justify-center items-center mb-10 px-2">
       {STEPS.map((s, i) => {
         const active = step === i + 1;
         const done = step > i + 1;
         return (
           <div key={i} className="flex items-center">
-            <div className="flex flex-col items-center gap-1.5">
+            <div className="flex flex-col items-center gap-1">
               <div
-                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold font-sans transition-all duration-300"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold font-sans transition-all duration-300"
                 style={{
                   background: done || active ? 'var(--rose)' : '#F0F0F0',
                   border: done || active ? 'none' : '1px solid #DDD',
@@ -37,7 +39,13 @@ function StepIndicator({ step }: { step: number }) {
                 {done ? '✓' : i + 1}
               </div>
               <span
-                className="text-[10px] font-semibold tracking-wider uppercase"
+                className="hidden sm:block text-[10px] font-semibold tracking-wider uppercase"
+                style={{ color: active ? 'var(--rose)' : '#7A7A7A' }}
+              >
+                {s}
+              </span>
+              <span
+                className="sm:hidden text-[9px] font-semibold uppercase max-w-[40px] text-center leading-tight"
                 style={{ color: active ? 'var(--rose)' : '#7A7A7A' }}
               >
                 {s}
@@ -45,7 +53,7 @@ function StepIndicator({ step }: { step: number }) {
             </div>
             {i < STEPS.length - 1 && (
               <div
-                className="w-16 h-px mb-5 mx-2 transition-colors duration-300"
+                className="w-6 sm:w-14 h-px mb-5 mx-1 sm:mx-2 transition-colors duration-300 flex-shrink-0"
                 style={{ background: done ? 'var(--rose)' : '#E0E0E0' }}
               />
             )}
@@ -63,6 +71,14 @@ export function BookingWizard() {
   } = useBookingStore();
 
   const addAppointment = useAdminStore((s) => s.addAppointment);
+  const appointments = useAdminStore((s) => s.appointments);
+  const services = useAdminStore((s) => s.services);
+
+  const dateStr = useMemo(() => date ? date.toISOString().split('T')[0] : '', [date]);
+  const bookedTimes = useMemo(
+    () => new Set(appointments.filter(a => a.date === dateStr && (a.status === 'pending' || a.status === 'confirmed')).map(a => a.time)),
+    [appointments, dateStr]
+  );
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -74,12 +90,12 @@ export function BookingWizard() {
     setClientPhone(data.phone);
     setStatus('loading');
     setTimeout(() => {
-      const svc = SERVICES.find((s) => s.name === service);
+      const svc = services.find((s) => s.name === service);
       addAppointment({
         clientName: data.name,
         clientPhone: data.phone,
         service,
-        date: date ? date.toISOString().split('T')[0] : '',
+        date: dateStr,
         time,
         status: 'pending',
         price: svc?.priceNum ?? 0,
@@ -92,6 +108,8 @@ export function BookingWizard() {
   const waFallback = `https://wa.me/${WHATSAPP}?text=Hola%20Ariana!%20Quisiera%20reservar%20un%20turno%20%F0%9F%92%86%E2%80%8D%E2%99%80%EF%B8%8F`;
 
   if (status === 'success') {
+    const svc = services.find((s) => s.name === service);
+    const gcalLink = buildGoogleCalendarUrl(service, date, time, svc?.durationMin ?? 60);
     return (
       <section id="turnero" className="py-24 px-6" style={{ background: 'linear-gradient(160deg, #FDF0EF 0%, #F9EDE9 100%)' }}>
         <div className="max-w-[560px] mx-auto text-center">
@@ -107,7 +125,7 @@ export function BookingWizard() {
           <p className="text-[14.4px] text-muted leading-[1.6] mb-8">
             Para confirmar tu turno, tocá el botón y enviá el mensaje por WhatsApp. ¡Te esperamos!
           </p>
-          <div className="flex gap-4 justify-center flex-wrap">
+          <div className="flex gap-3 justify-center flex-wrap">
             <a
               href={waLink}
               target="_blank"
@@ -117,24 +135,39 @@ export function BookingWizard() {
             >
               💬 Confirmar por WhatsApp
             </a>
-            <Button
-              variant="outline"
-              onClick={reset}
+            <a
+              href={gcalLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white border border-charcoal/15 text-charcoal px-6 py-3.5 rounded-full text-[14px] font-semibold hover:-translate-y-0.5 hover:border-rose/40 transition-all"
+              style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.07)' }}
             >
-              Nuevo turno
-            </Button>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="4" width="18" height="17" rx="2" stroke="#4285F4" strokeWidth="1.8"/>
+                <path d="M3 9h18" stroke="#4285F4" strokeWidth="1.8"/>
+                <path d="M8 2v4M16 2v4" stroke="#4285F4" strokeWidth="1.8" strokeLinecap="round"/>
+                <path d="M8 13h2.5l-1 2.5L12 14l2.5 1.5L13 13H16" stroke="#EA4335" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Agendar en Google Calendar
+            </a>
           </div>
+          <button
+            onClick={reset}
+            className="mt-5 text-[13px] text-muted hover:text-rose transition-colors underline underline-offset-2"
+          >
+            Reservar otro turno
+          </button>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="turnero" className="py-24 px-6" style={{ background: 'linear-gradient(160deg, #FDF0EF 0%, #F9EDE9 100%)' }}>
+    <section id="turnero" className="py-16 sm:py-24 px-4 sm:px-6" style={{ background: 'linear-gradient(160deg, #FDF0EF 0%, #F9EDE9 100%)' }}>
       <div className="max-w-[760px] mx-auto">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 sm:mb-10">
           <p className="section-label">Reserva online</p>
-          <h2 className="font-display text-4xl font-semibold text-charcoal leading-tight">
+          <h2 className="font-display text-3xl sm:text-4xl font-semibold text-charcoal leading-tight">
             Reservá tu turno<br />
             <em className="not-italic text-rose">en minutos</em>
           </h2>
@@ -142,7 +175,7 @@ export function BookingWizard() {
 
         <StepIndicator step={step} />
 
-        <div className="bg-white rounded-2xl border border-charcoal/8 p-8 md:p-10 shadow-card">
+        <div className="bg-white rounded-2xl border border-charcoal/8 p-5 sm:p-8 md:p-10 shadow-card">
 
           {/* Step 1: Service */}
           {step === 1 && (
@@ -150,11 +183,11 @@ export function BookingWizard() {
               <h3 className="font-display text-2xl font-semibold text-charcoal mb-1">¿Qué servicio necesitás?</h3>
               <p className="text-sm text-muted mb-7">Seleccioná el servicio que querés reservar</p>
               <div className="grid sm:grid-cols-2 gap-3">
-                {SERVICES.map((s) => (
+                {services.map((s) => (
                   <button
                     key={s.name}
                     onClick={() => setService(s.name)}
-                    className="p-4 rounded-xl text-left transition-all duration-200 flex justify-between items-center"
+                    className="p-4 min-h-[64px] rounded-xl text-left transition-all duration-200 flex justify-between items-center cursor-pointer"
                     style={{
                       border: `1.5px solid ${service === s.name ? 'var(--rose)' : '#E8E8E8'}`,
                       background: service === s.name ? 'rgba(196,116,138,0.08)' : 'transparent',
@@ -200,14 +233,14 @@ export function BookingWizard() {
               <p className="text-sm text-muted mb-7">Horarios disponibles para el {formatDate(date)}</p>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
                 {TIME_SLOTS.map((t) => {
-                  const unavail = UNAVAILABLE_SLOTS.includes(t);
+                  const unavail = UNAVAILABLE_SET.has(t) || bookedTimes.has(t);
                   const sel = time === t;
                   return (
                     <button
                       key={t}
                       disabled={unavail}
                       onClick={() => setTime(t)}
-                      className="py-3 rounded-xl text-sm font-medium font-sans transition-all duration-200"
+                      className="py-3 min-h-[44px] rounded-xl text-sm font-medium font-sans transition-all duration-200"
                       style={{
                         border: `1.5px solid ${sel ? 'var(--rose)' : unavail ? 'transparent' : '#E8E8E8'}`,
                         background: sel ? 'rgba(196,116,138,0.1)' : unavail ? '#F9F9F9' : 'transparent',

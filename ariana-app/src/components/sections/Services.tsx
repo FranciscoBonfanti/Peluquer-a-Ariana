@@ -40,7 +40,7 @@ export function Services() {
   const [ref, visible] = useInView();
 
   return (
-    <section id="servicios" ref={ref} className="bg-white py-24 px-6">
+    <section id="servicios" ref={ref} className="bg-white py-16 sm:py-24 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div
           className="text-center mb-14 transition-all duration-500"
@@ -58,49 +58,6 @@ export function Services() {
           ))}
         </div>
 
-        {/* Pricing table */}
-        <div
-          id="precios"
-          className="mt-20 max-w-[720px] mx-auto transition-all duration-500 delay-200"
-          style={{ opacity: visible ? 1 : 0, transform: visible ? 'none' : 'translateY(30px)' }}
-        >
-          <div className="text-center mb-8">
-            <p className="section-label">Tarifas</p>
-            <h2 className="font-display text-4xl font-semibold text-charcoal leading-tight">
-              Precios accesibles,<br />
-              <em className="not-italic text-rose">calidad profesional</em>
-            </h2>
-          </div>
-
-          <div className="bg-white rounded-2xl overflow-hidden shadow-card border border-charcoal/5">
-            {SERVICES.map((s, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between px-8 py-5 hover:bg-cream-warm transition-colors duration-200"
-                style={{ borderBottom: i < SERVICES.length - 1 ? '1px solid rgba(0,0,0,0.06)' : 'none' }}
-              >
-                <div className="flex items-center gap-4">
-                  <span className="text-rose">{s.icon}</span>
-                  <span className="font-sans text-[15px] text-charcoal">{s.name}</span>
-                </div>
-                <span className="font-display text-lg font-semibold text-charcoal">{s.price}</span>
-              </div>
-            ))}
-          </div>
-
-          <p className="text-center mt-4 text-[13px] text-muted italic">
-            * Los precios pueden variar según el largo y estado del cabello. Consultanos sin compromiso.
-          </p>
-
-          <div className="flex justify-center mt-8">
-            <a
-              href="#turnero"
-              className="inline-flex items-center gap-2 bg-rose text-white px-10 py-3.5 rounded-full text-[15px] font-semibold shadow-rose hover:-translate-y-0.5 hover:shadow-rose-lg transition-all duration-300"
-            >
-              Reservar mi turno
-            </a>
-          </div>
-        </div>
       </div>
     </section>
   );

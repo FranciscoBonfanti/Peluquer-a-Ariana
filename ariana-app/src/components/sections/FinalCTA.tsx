@@ -8,7 +8,7 @@ export function FinalCTA() {
   return (
     <section
       ref={ref}
-      className="py-24 px-6 text-center"
+      className="py-16 sm:py-24 px-4 sm:px-6 text-center"
       style={{ background: 'linear-gradient(135deg, #C4748A 0%, #D4889A 100%)' }}
     >
       <div

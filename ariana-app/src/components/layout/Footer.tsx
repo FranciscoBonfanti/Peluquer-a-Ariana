@@ -4,7 +4,7 @@ export function Footer() {
   const waLink = `https://wa.me/${WHATSAPP}?text=Hola%20Ariana!%20Quisiera%20consultar%20sobre%20los%20servicios%20%F0%9F%92%86%E2%80%8D%E2%99%80%EF%B8%8F`;
 
   return (
-    <footer className="bg-charcoal text-white/70 pt-14 pb-8 px-6">
+    <footer className="bg-charcoal text-white/70 pt-12 pb-8 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-[1.5fr_1fr_1fr] gap-10 mb-10">
           <div>
@@ -33,7 +33,9 @@ export function Footer() {
                 💬 WhatsApp directo
               </a>
               <span className="text-sm">📍 Consultá la dirección por WhatsApp</span>
-              <span className="text-sm">📸 @ariana.peluqueria</span>
+              <a href="https://www.instagram.com/ariana.peluqueria" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm hover:text-rose transition-colors">
+                📸 @ariana.peluqueria
+              </a>
             </div>
           </div>
         </div>

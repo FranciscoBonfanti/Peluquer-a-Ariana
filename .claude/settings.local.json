@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(vercel --prod --yes)",
+      "Bash(gh api *)",
+      "Bash(python skills/ui-ux-pro-max/scripts/search.py \"beauty salon feminine service booking elegant warm\" --design-system -p \"Ariana Peluquería\")"
+    ]
+  }
+}

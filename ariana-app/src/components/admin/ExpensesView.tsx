@@ -41,7 +41,7 @@ export function ExpensesView() {
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-3xl font-semibold text-charcoal">Gastos</h1>

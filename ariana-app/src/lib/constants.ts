@@ -3,12 +3,12 @@ import type { Service, GalleryItem } from '../types';
 export const WHATSAPP = '543496548309';
 
 export const SERVICES: Service[] = [
-  { name: 'Corte de Puntas', desc: 'Renovación para lucir un cabello sano y con vida. Rápido y preciso.', price: '$10.000', priceNum: 10000, icon: '✂', duration: '30 min' },
-  { name: 'Corte Completo', desc: 'Cambio de largo, capas y forma adaptados a tu rostro y estilo.', price: '$15.000', priceNum: 15000, icon: '✦', duration: '45 min' },
-  { name: 'Alisado', desc: 'Resultado liso y brillante de larga duración con productos premium.', price: '$30.000', priceNum: 30000, icon: '〰', duration: '2–3 hs' },
-  { name: 'Keratina', desc: 'Tratamiento nutritivo que reduce el frizz y aporta brillo intenso.', price: '$25.000', priceNum: 25000, icon: '◆', duration: '2 hs' },
-  { name: 'Color', desc: 'Mechas, tinte o color completo. Colores vibrantes que cuidan tu cabello.', price: 'desde $40.000', priceNum: 40000, icon: '◉', duration: '2–3 hs' },
-  { name: 'Peinados', desc: 'Para ocasiones especiales o el día a día. Desde recogidos hasta sueltos.', price: '$30.000–$35.000', priceNum: 32500, icon: '✿', duration: '1–1.5 hs' },
+  { name: 'Corte de Puntas', desc: 'Renovación para lucir un cabello sano y con vida. Rápido y preciso.', price: '$10.000', priceNum: 10000, icon: '✂', duration: '30 min', durationMin: 30 },
+  { name: 'Corte Completo', desc: 'Cambio de largo, capas y forma adaptados a tu rostro y estilo.', price: '$15.000', priceNum: 15000, icon: '✦', duration: '45 min', durationMin: 45 },
+  { name: 'Alisado', desc: 'Resultado liso y brillante de larga duración con productos premium.', price: '$30.000', priceNum: 30000, icon: '〰', duration: '2–3 hs', durationMin: 150 },
+  { name: 'Keratina', desc: 'Tratamiento nutritivo que reduce el frizz y aporta brillo intenso.', price: '$25.000', priceNum: 25000, icon: '◆', duration: '2 hs', durationMin: 120 },
+  { name: 'Color', desc: 'Mechas, tinte o color completo. Colores vibrantes que cuidan tu cabello.', price: 'desde $40.000', priceNum: 40000, icon: '◉', duration: '2–3 hs', durationMin: 150 },
+  { name: 'Peinados', desc: 'Para ocasiones especiales o el día a día. Desde recogidos hasta sueltos.', price: '$30.000–$35.000', priceNum: 32500, icon: '✿', duration: '1–1.5 hs', durationMin: 90 },
 ];
 
 export const TIME_SLOTS = [

@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Appointment, Expense, AdminView } from '../types';
+import type { Appointment, Expense, AdminView, Service } from '../types';
 import { MOCK_APPOINTMENTS, MOCK_EXPENSES } from '../lib/mockData';
+import { SERVICES } from '../lib/constants';
 import { generateId } from '../lib/utils';
 
 interface AdminStore {
@@ -9,6 +10,7 @@ interface AdminStore {
   activeView: AdminView;
   appointments: Appointment[];
   expenses: Expense[];
+  services: Service[];
   selectedMonth: number;
   selectedYear: number;
   login: (password: string) => boolean;
@@ -16,8 +18,10 @@ interface AdminStore {
   setView: (view: AdminView) => void;
   addAppointment: (appointment: Omit<Appointment, 'id' | 'createdAt'>) => void;
   updateAppointmentStatus: (id: string, status: Appointment['status']) => void;
+  deleteAppointment: (id: string) => void;
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   deleteExpense: (id: string) => void;
+  updateService: (name: string, patch: Partial<Pick<Service, 'price' | 'priceNum' | 'desc' | 'duration'>>) => void;
   setMonth: (year: number, month: number) => void;
 }
 
@@ -30,6 +34,7 @@ export const useAdminStore = create<AdminStore>()(
       activeView: 'dashboard',
       appointments: MOCK_APPOINTMENTS,
       expenses: MOCK_EXPENSES,
+      services: SERVICES,
       selectedMonth: new Date().getMonth(),
       selectedYear: new Date().getFullYear(),
 
@@ -57,6 +62,11 @@ export const useAdminStore = create<AdminStore>()(
           ),
         })),
 
+      deleteAppointment: (id) =>
+        set((state) => ({
+          appointments: state.appointments.filter((a) => a.id !== id),
+        })),
+
       addExpense: (expense) =>
         set((state) => ({
           expenses: [{ ...expense, id: generateId() }, ...state.expenses],
@@ -67,6 +77,11 @@ export const useAdminStore = create<AdminStore>()(
           expenses: state.expenses.filter((e) => e.id !== id),
         })),
 
+      updateService: (name, patch) =>
+        set((state) => ({
+          services: state.services.map((s) => s.name === name ? { ...s, ...patch } : s),
+        })),
+
       setMonth: (selectedYear, selectedMonth) => set({ selectedYear, selectedMonth }),
     }),
     {
@@ -74,6 +89,7 @@ export const useAdminStore = create<AdminStore>()(
       partialize: (state) => ({
         appointments: state.appointments,
         expenses: state.expenses,
+        services: state.services,
         authenticated: state.authenticated,
       }),
     }

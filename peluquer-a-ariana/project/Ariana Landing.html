@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ariana — Peluquería Femenina</title>
+  <link rel="icon" href="assets/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --rose: #C4748A;
+      --rose-light: #E8C5CF;
+      --gold: #C9A96E;
+      --black: #1A1A1A;
+      --grey: #7A7A7A;
+      --cream: #FBF6F3;
+    }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    ::selection { background: rgba(196,116,138,0.2); }
+
+    @keyframes spin     { to { transform: rotate(360deg); } }
+    @keyframes fadeUp   { from { opacity: 0; transform: translateY(32px); } to { opacity: 1; transform: none; } }
+    @keyframes fadeIn   { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes slideUp  { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+    @keyframes slideLeft{ from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
+    @keyframes scaleIn  { from { opacity: 0; transform: scale(0.88); } to { opacity: 1; transform: none; } }
+    @keyframes floatA   { 0%,100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-18px) rotate(4deg); } }
+    @keyframes floatB   { 0%,100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(14px) rotate(-3deg); } }
+    @keyframes floatC   { 0%,100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-10px) scale(1.06); } }
+    @keyframes shimmer  { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    @keyframes pulse2   { 0%,100% { box-shadow: 0 0 0 0 rgba(196,116,138,0.4); } 50% { box-shadow: 0 0 0 12px rgba(196,116,138,0); } }
+    @keyframes drawLine { from { width: 0; } to { width: 100%; } }
+    @keyframes bounceIn { 0% { opacity:0; transform:scale(0.3); } 50% { transform:scale(1.05); } 70% { transform:scale(0.95); } 100% { opacity:1; transform:scale(1); } }
+
+    /* Hero text entrance */
+    .hero-badge   { animation: fadeUp  0.6s ease 0.1s both; }
+    .hero-h1      { animation: fadeUp  0.7s ease 0.25s both; }
+    .hero-sub     { animation: fadeUp  0.7s ease 0.4s both; }
+    .hero-ctas    { animation: fadeUp  0.7s ease 0.55s both; }
+    .hero-trust   { animation: fadeUp  0.7s ease 0.7s both; }
+    .hero-image   { animation: slideLeft 0.8s cubic-bezier(0.22,1,0.36,1) 0.3s both; }
+    .hero-card    { animation: bounceIn 0.6s ease 0.9s both; }
+
+    /* Float decorations */
+    .deco-float-a { animation: floatA 6s ease-in-out infinite; }
+    .deco-float-b { animation: floatB 8s ease-in-out infinite; }
+    .deco-float-c { animation: floatC 5s ease-in-out infinite; }
+    .deco-float-d { animation: floatA 7s ease-in-out 1s infinite; }
+
+    /* CTA pulse */
+    .btn-pulse { animation: pulse2 2.5s ease-in-out infinite; }
+
+    /* Section labels underline */
+    .section-label-line::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: var(--rose);
+      margin-top: 4px;
+      animation: drawLine 0.8s ease forwards;
+    }
+
+    /* Shimmer gradient text */
+    .shimmer-text {
+      background: linear-gradient(90deg, var(--rose) 0%, #E8A0B4 30%, var(--gold) 50%, #E8A0B4 70%, var(--rose) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 4s linear infinite;
+    }
+
+    /* Mobile responsive overrides */
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr !important; }
+      .hero-image-col { display: none !important; }
+      .trust-grid { grid-template-columns: 1fr !important; }
+      .services-grid { grid-template-columns: 1fr !important; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .footer-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+      .nav-links { display: none !important; }
+      .nav-cta { display: none !important; }
+      .step-line { width: 28px !important; }
+      .booking-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (max-width: 480px) {
+      .services-grid { grid-template-columns: 1fr !important; }
+      .booking-service-grid { grid-template-columns: 1fr !important; }
+      .time-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(196,116,138,0.3); border-radius: 99px; }
+  </style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="Turnero.jsx"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "variant": "B",
+  "whatsapp": "543496548309",
+  "roseColor": "#C4748A",
+  "goldColor": "#C9A96E",
+  "roundness": "rounded"
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const { variant, whatsapp, roseColor, roundness } = tweaks;
+
+  // Apply CSS variables live
+  useEffect(() => {
+    document.documentElement.style.setProperty('--rose', tweaks.roseColor);
+    document.documentElement.style.setProperty('--gold', tweaks.goldColor);
+  }, [tweaks.roseColor, tweaks.goldColor]);
+
+  return (
+    <div>
+      <Navbar variant={variant} />
+      <Hero variant={variant} />
+      <Trust variant={variant} />
+      <Services variant={variant} />
+
+      <Turnero variant={variant} whatsapp={whatsapp} />
+      <Objections variant={variant} />
+      <Gallery variant={variant} />
+      <FinalCTA variant={variant} whatsapp={whatsapp} />
+      <Footer variant={variant} whatsapp={whatsapp} />
+
+      <TweaksPanel>
+        <TweakSection title="Variante de diseño">
+          <TweakRadio
+            id="variant"
+            label="Estilo"
+            options={[
+              { value: 'A', label: 'A · Premium' },
+              { value: 'B', label: 'B · Cálido' },
+              { value: 'C', label: 'C · Directo' },
+            ]}
+            value={variant}
+            onChange={v => setTweak('variant', v)}
+          />
+        </TweakSection>
+
+        <TweakSection title="Colores">
+          <TweakColor id="roseColor" label="Color principal (rosa)" value={tweaks.roseColor} onChange={v => setTweak('roseColor', v)} />
+          <TweakColor id="goldColor" label="Acento dorado" value={tweaks.goldColor} onChange={v => setTweak('goldColor', v)} />
+        </TweakSection>
+
+        <TweakSection title="Contacto">
+          <TweakText id="whatsapp" label="Número WhatsApp" value={whatsapp} onChange={v => setTweak('whatsapp', v)} placeholder="5491112345678" />
+        </TweakSection>
+      </TweaksPanel>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

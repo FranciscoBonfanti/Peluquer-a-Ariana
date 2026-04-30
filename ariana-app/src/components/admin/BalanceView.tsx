@@ -32,7 +32,7 @@ export function BalanceView() {
   const years = [2025, 2026, 2027];
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="font-display text-3xl font-semibold text-charcoal">Balance mensual</h1>
         <div className="flex gap-2">

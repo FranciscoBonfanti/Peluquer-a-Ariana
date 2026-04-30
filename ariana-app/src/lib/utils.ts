@@ -34,3 +34,30 @@ export function getMonthName(month: number): string {
 export function generateId(): string {
   return Math.random().toString(36).slice(2, 10);
 }
+
+export function buildGoogleCalendarUrl(
+  service: string,
+  date: Date | null,
+  time: string,
+  durationMin: number
+): string {
+  if (!date || !time) return '';
+  const [h, m] = time.split(':').map(Number);
+  const start = new Date(date);
+  start.setHours(h, m, 0, 0);
+  const end = new Date(start.getTime() + durationMin * 60 * 1000);
+  const fmt = (d: Date) =>
+    d.getFullYear().toString() +
+    String(d.getMonth() + 1).padStart(2, '0') +
+    String(d.getDate()).padStart(2, '0') + 'T' +
+    String(d.getHours()).padStart(2, '0') +
+    String(d.getMinutes()).padStart(2, '0') + '00';
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `Turno en Ariana Peluquería – ${service}`,
+    dates: `${fmt(start)}/${fmt(end)}`,
+    details: `Turno reservado en Ariana Peluquería.\n\nServicio: ${service}\nHorario: ${time} hs\n\nConfirmá tu turno por WhatsApp antes del día.`,
+    location: 'Ariana Peluquería Femenina – Consultá la dirección por WhatsApp',
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}

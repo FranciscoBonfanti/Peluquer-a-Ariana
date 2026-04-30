@@ -117,7 +117,7 @@ export function Gallery() {
   const [active, setActive] = useState<GalleryItem | null>(null);
 
   return (
-    <section ref={ref} className="py-24 px-6" style={{ background: '#FDF0EF' }}>
+    <section ref={ref} className="py-16 sm:py-24 px-4 sm:px-6" style={{ background: '#FDF0EF' }}>
       <div className="max-w-6xl mx-auto">
         <div
           className="text-center mb-12 transition-all duration-500"
@@ -137,7 +137,11 @@ export function Gallery() {
         </div>
 
         <p className="text-center mt-6 text-[13px] text-muted italic">
-          Seguinos en Instagram @ariana.peluqueria para ver más resultados
+          Seguinos en Instagram{' '}
+          <a href="https://www.instagram.com/ariana.peluqueria" target="_blank" rel="noopener noreferrer" className="text-rose font-semibold not-italic hover:underline">
+            @ariana.peluqueria
+          </a>{' '}
+          para ver más resultados
         </p>
       </div>
 

@@ -5,6 +5,7 @@ export interface Service {
   priceNum: number;
   icon: string;
   duration: string;
+  durationMin: number;
 }
 
 export interface GalleryItem {
